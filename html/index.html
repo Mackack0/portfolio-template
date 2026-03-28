@@ -143,13 +143,21 @@
             <h2 class="text-white font-bold mb-4 text-xl tracking-tight">System.contact()</h2>
             <p class="text-zinc-500 text-sm mb-8 italic">¿Tienes un desafío técnico para mí?</p>
             <form id="contact-form" class="space-y-4">
-                <input type="email" name="email" placeholder="tu@email.com" required
-                    class="w-full bg-zinc-900 border border-zinc-800 p-4 rounded focus:border-emerald-500 outline-none transition-all text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" name="name" placeholder="Tu Nombre" required
+                        class="w-full bg-zinc-900 border border-zinc-800 p-4 rounded focus:border-emerald-500 outline-none transition-all text-xs">
+                    <input type="email" name="email" placeholder="tu@email.com" required
+                        class="w-full bg-zinc-900 border border-zinc-800 p-4 rounded focus:border-emerald-500 outline-none transition-all text-xs">
+                </div>
+                <div class="hidden" aria-hidden="true">
+                    <label for="contact-gotcha">Si ves esto, no lo llenes:</label>
+                    <input id="contact-gotcha" type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+                </div>
                 <textarea name="message" rows="4" placeholder="Mensaje..." required
                     class="w-full bg-zinc-900 border border-zinc-800 p-4 rounded focus:border-emerald-500 outline-none transition-all text-xs"></textarea>
-                <button type="submit" id="form-btn"
+                <button type="submit" id="btn-envio"
                     class="w-full bg-emerald-600 hover:bg-emerald-500 text-black font-bold py-3 rounded text-xs transition-all uppercase tracking-widest">Enviar
-                    Transmisión</button>
+                    Mensaje</button>
                 <p id="form-msg" class="text-[10px] mt-4 hidden"></p>
             </form>
         </div>

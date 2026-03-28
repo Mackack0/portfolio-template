@@ -59,27 +59,34 @@ async def get_discord():
 # PROXY DE CONTACTO: Recibe el form y lo reenvía a Formspree
 @app.post("/api/contact")
 async def contact_proxy(request: Request):
-    print(">> Recibiendo petición de contacto...")
+    print(">> Petición recibida. Iniciando escaneo de seguridad...")
+    
     try:
         form_data = await request.form()
         data_dict = dict(form_data)
         
-        # --- LÓGICA DE FILTRADO ---
+        if data_dict.get("_gotcha"):
+            print(">> [ALERTA] Bot detectado vía Honeypot. Ejecutando bloqueo silencioso.")
+            # Retornamos éxito simulado para que el bot no intente otras rutas
+            return {"status": "success", "message": "Feedback received"}
+
         message = data_dict.get("message", "")
+        
         url_pattern = r'(https?://[^\s]+|discord\.(gg|com/invite)/[^\s]+)'
         
         def neutralize(match):
             return match.group(0).replace(".", " [dot] ")
-
+        
         clean_message = re.sub(url_pattern, neutralize, message, flags=re.IGNORECASE)
         
-        spam_keywords = ["nitro", "free steam", "gift code"]
+        spam_keywords = ["nitro", "free steam", "gift code", "free money"]
         if any(key in clean_message.lower() for key in spam_keywords):
-             print(">> Spam detectado y bloqueado localmente.")
-             return {"status": "success", "message": "Simulated delivery"}
+            print(">> [ALERTA] Spam por keywords detectado. Bloqueando envío.")
+            return {"status": "success", "code": "simulated"}
 
         data_dict["message"] = clean_message
-
+        data_dict.pop("_gotcha", None)
+        
         url = f"https://formspree.io/f/{FORMSPREE_ID}"
         
         async with httpx.AsyncClient() as client:
@@ -88,9 +95,9 @@ async def contact_proxy(request: Request):
                 data=data_dict, 
                 headers={"Accept": "application/json"}
             )
-            print(f">> Respuesta de Formspree: {resp.status_code}")
+            print(f">> Formspree respondió con estado: {resp.status_code}")
             return resp.json()
             
     except Exception as e:
-        print(f"!! ERROR EN EL PROXY: {str(e)}")
-        return {"error": str(e)}, 500
+        print(f"!! ERROR CRÍTICO: {str(e)}")
+        return {"error": "Internal Server Error"}, 500
