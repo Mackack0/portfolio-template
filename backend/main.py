@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 import httpx
 import os
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -58,11 +59,26 @@ async def get_discord():
 # PROXY DE CONTACTO: Recibe el form y lo reenvía a Formspree
 @app.post("/api/contact")
 async def contact_proxy(request: Request):
-    print(">> Recibiendo petición de contacto...") # Esto saldrá en docker logs
+    print(">> Recibiendo petición de contacto...")
     try:
         form_data = await request.form()
         data_dict = dict(form_data)
-        print(f">> Datos recibidos: {data_dict}")
+        
+        # --- LÓGICA DE FILTRADO ---
+        message = data_dict.get("message", "")
+        url_pattern = r'(https?://[^\s]+|discord\.(gg|com/invite)/[^\s]+)'
+        
+        def neutralize(match):
+            return match.group(0).replace(".", " [dot] ")
+
+        clean_message = re.sub(url_pattern, neutralize, message, flags=re.IGNORECASE)
+        
+        spam_keywords = ["nitro", "free steam", "gift code"]
+        if any(key in clean_message.lower() for key in spam_keywords):
+             print(">> Spam detectado y bloqueado localmente.")
+             return {"status": "success", "message": "Simulated delivery"}
+
+        data_dict["message"] = clean_message
 
         url = f"https://formspree.io/f/{FORMSPREE_ID}"
         
