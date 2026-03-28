@@ -1,0 +1,38 @@
+services:
+  # FRONTEND (El HTML)
+  personal-portfolio:
+    image: nginx:alpine
+    container_name: personal-portfolio
+    volumes:
+      - ./html:/usr/share/nginx/html
+    ports:
+      - "8081:80"
+    networks:
+      - npm_default
+
+  # BACKEND (Python)
+  portfolio-backend:
+    build: ./backend
+    container_name: portfolio-backend
+    env_file: ./backend/.env
+    networks:
+      - npm_default
+    # Sin ports, NPM llegará por la red interna
+
+    # EL RECEPCIONISTA (NPM)
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
+    ports:
+      - '80:80'
+      - '81:81'
+      - '8080:80'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - npm_default
+
+networks:
+  npm_default:
+    external: true

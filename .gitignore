@@ -1,0 +1,21 @@
+# Secretos y Configuración Local
+.env
+data/
+letsencrypt/
+__pycache__/
+
+# Docker Logs y Temporales
+*.log
+.DS_Store
+
+# Imagenes
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+
+# Archivos de Configuración de IDEs
+.vscode/
+.idea/
+

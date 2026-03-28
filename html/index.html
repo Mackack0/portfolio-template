@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu Nombre | Portafolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass {
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(12px);
+        }
+
+        .modal-blur {
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
+
+        #waka-stats img {
+            filter: brightness(1.0);
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body class="bg-zinc-950 text-zinc-300 selection:bg-emerald-500/30">
+
+    <nav class="p-6 border-b border-zinc-800 glass sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <!-- Titulo Pagina -->
+            <span class="text-emerald-500 font-bold text-xl tracking-tighter">TU_NOMBRE.init()</span>
+            <div class="space-x-6 text-xs uppercase tracking-widest hidden md:block">
+                <!-- Enlaces de Navegacion con efecto hover -->
+                <a href="#sobre-mi" class="hover:text-emerald-400 transition-colors">/sobre-mi</a>
+                <a href="#proyectos" class="hover:text-emerald-400 transition-colors">/proyectos</a>
+                <a href="#contacto" class="hover:text-emerald-400 transition-colors">/contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="max-w-5xl mx-auto py-20 px-6">
+        <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+            <div class="flex-1">
+                <!-- Titulo Personal -->
+                <h1 class="text-5xl font-extrabold text-white mb-6">Software & <span class="text-emerald-500">Your
+                        Niche</span>
+                    Developer.</h1>
+                <!-- Breve Descripcion Personal -->
+                <p class="text-lg leading-relaxed text-zinc-400 mb-8 max-w-xl">
+                    Escribe aquí una presentación breve: qué haces, en qué te especializas y qué tipo de
+                    soluciones construyes.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#contacto"
+                        class="bg-emerald-600 hover:bg-emerald-500 text-black px-6 py-3 rounded-md font-bold transition-all transform hover:-translate-y-1">Contáctame</a>
+                    <div class="bg-zinc-900 border border-zinc-800 px-4 py-3 rounded-md flex items-center gap-3">
+                        <span id="status-dot" class="w-2 h-2 bg-zinc-500 rounded-full animate-pulse"></span>
+                        <span id="status-text" class="text-[10px] uppercase tracking-wider">Cargando estado...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widget para clima local -->
+            <div class="w-full md:w-64 space-y-4 text-[10px] uppercase">
+                <div class="p-4 bg-zinc-900/50 border border-zinc-800 rounded-lg">
+                    <div class="text-zinc-500 mb-1">Local_Weather</div>
+                    <div id="weather-info" class="text-white font-bold">Tu Ciudad: --°C</div>
+                </div>
+
+                <!-- Widget para WakaTime (Tiempo de programando) -->
+                <div class="p-4 bg-zinc-900/50 border border-zinc-800 rounded-lg">
+                    <div class="text-zinc-500 mb-1">Weekly_Coding</div>
+                    <div id="waka-stats" class="text-emerald-500 font-bold">Fetching WakaTime...</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seccion "Sobre mi"-->
+    <section id="sobre-mi" class="max-w-5xl mx-auto py-16 px-6 border-t border-zinc-900">
+        <h2 class="text-white font-bold mb-8 text-xl tracking-tight"><span class="text-emerald-500">#</span> sobre_mí
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-zinc-400 leading-loose">
+            <!-- Descripcion Personal Avanzada -->
+            <p>Este bloque está pensado para que cuentes tu enfoque profesional, tus intereses técnicos y el tipo de
+                impacto que buscas generar con tus proyectos.</p>
+            <!-- Stack Tecnologico y Educacion -->
+            <div class="bg-black/40 p-6 rounded border border-zinc-800/50 text-emerald-500/80">
+                > stack: [Tu Stack Principal]<br>
+                > tools: [Tus Herramientas]<br>
+                > formación: [Tu Universidad / Certificaciones]
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Proyectos -->
+    <section id="proyectos" class="max-w-5xl mx-auto py-20 px-6 border-t border-zinc-900">
+        <!-- Titulo de la Seccion de Proyectos -->
+        <h2 class="text-white font-bold mb-10 text-xl tracking-tight"><span class="text-emerald-500">#</span>
+            proyectos_principales</h2>
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        </div>
+        <!-- Subseccion para proyectos de gitgub que contengan el tag "portfolio" -->
+        <h3 class="text-white font-bold mt-20 mb-8 flex items-center gap-2">
+            <i class="fab fa-github"></i> repositorios_públicos
+        </h3>
+        <div id="github-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        </div>
+    </section>
+
+    <!-- Modulo para detalles de proyectos -->
+    <div id="modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 modal-blur bg-black/60">
+        <div class="bg-zinc-900 border border-zinc-800 max-w-2xl w-full rounded-xl overflow-hidden shadow-2xl">
+            <div id="modal-content"></div>
+            <div class="p-6 bg-zinc-900 flex justify-end">
+                <button onclick="closeModal()"
+                    class="text-zinc-500 hover:text-white uppercase text-xs font-bold tracking-widest transition">Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario de Contacto -->
+    <section id="contacto" class="max-w-5xl mx-auto py-20 px-6 border-t border-zinc-900">
+        <div class="max-w-xl mx-auto text-center">
+            <h2 class="text-white font-bold mb-4 text-xl tracking-tight">System.contact()</h2>
+            <p class="text-zinc-500 text-sm mb-8 italic">¿Tienes un desafío técnico para mí?</p>
+            <form id="contact-form" class="space-y-4">
+                <input type="email" name="email" placeholder="tu@email.com" required
+                    class="w-full bg-zinc-900 border border-zinc-800 p-4 rounded focus:border-emerald-500 outline-none transition-all text-xs">
+                <textarea name="message" rows="4" placeholder="Mensaje..." required
+                    class="w-full bg-zinc-900 border border-zinc-800 p-4 rounded focus:border-emerald-500 outline-none transition-all text-xs"></textarea>
+                <button type="submit" id="form-btn"
+                    class="w-full bg-emerald-600 hover:bg-emerald-500 text-black font-bold py-3 rounded text-xs transition-all uppercase tracking-widest">Enviar
+                    Transmisión</button>
+                <p id="form-msg" class="text-[10px] mt-4 hidden"></p>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer De la Pagina Web -->
+    <footer class="py-12 text-center text-[9px] text-zinc-600 uppercase tracking-[0.3em]">
+        Template Portfolio // Personaliza este texto en index.html
+    </footer>
+
+    <!-- Script para manejar la logica de la pagina, incluyendo fetch de GitHub, Lanyard (Precencia en Discord) y el formulario de contacto -->
+    <script src="config.js?v=1.2"></script>
+    <script>
+        // Renderizado dinamico de los proyectos definidos en config.js dentro del grid de proyectos principales
+        const grid = document.getElementById('projects-grid');
+        CONFIG.PROJECTS.forEach(p => {
+            grid.innerHTML += `
+                <div onclick="openModal('${p.id}')" class="bg-zinc-900/30 border border-zinc-800 p-8 rounded-xl hover:border-emerald-500/40 transition-all group cursor-pointer">
+                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-emerald-400">${p.title}</h3>
+                    <p class="text-xs text-zinc-500 mb-6">${p.shortDesc}</p>
+                    <div class="flex gap-2">
+                        ${p.tech.map(t => `<span class="text-[9px] bg-zinc-950 px-2 py-1 rounded text-zinc-500 border border-zinc-800">${t}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+        });
+
+        // Funcion para abrir el modulo con detalles de proyecto (Lo llena dinamicamente segun el proyecto seleccionado)
+        function openModal(id) {
+            const p = CONFIG.PROJECTS.find(x => x.id === id);
+            document.getElementById('modal-content').innerHTML = `
+                <img src="${p.image}" class="w-full h-48 object-cover opacity-80">
+                <div class="p-8">
+                    <h2 class="text-2xl font-bold text-white mb-4 italic">${p.title}</h2>
+                    <p class="text-sm text-zinc-400 leading-relaxed mb-6">${p.longDesc}</p>
+                    <div class="flex items-center justify-between">
+                         <div class="flex gap-2">${p.tech.map(t => `<span class="text-[10px] text-emerald-500">#${t}</span>`).join('')}</div>
+                         <a href="${p.link}" target="_blank" class="text-white hover:text-emerald-500 transition"><i class="fab fa-github text-xl"></i></a>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal').classList.replace('hidden', 'flex');
+        }
+
+        // Funcion para cerrar el modulo de detalles de proyecto
+        function closeModal() { document.getElementById('modal').classList.replace('flex', 'hidden'); }
+
+        // Funcion para traer los repositorios publicos de github del usuario, mostrando solo los 6 mas recientes que contengan el topic definido en config.js
+        async function fetchGitHub() {
+            try {
+                const res = await fetch('/api/github-projects');
+                const filtered = await res.json();
+                const ghGrid = document.getElementById('github-grid');
+
+                ghGrid.innerHTML = filtered.map(r => `
+            <a href="${r.html_url}" target="_blank" class="p-4 bg-zinc-900/20 border border-zinc-900 rounded hover:border-zinc-700 transition-all">
+                <div class="text-xs font-bold text-white truncate">${r.name}</div>
+                <div class="text-[9px] text-zinc-600 mt-2 truncate">${r.description || 'Sin descripción'}</div>
+                <div class="mt-4 flex items-center justify-between text-[9px] text-emerald-900 font-bold uppercase">
+                    <span>${r.language || 'Code'}</span>
+                    <span>⭐ ${r.stargazers_count}</span>
+                </div>
+            </a>
+        `).join('');
+            } catch (e) { console.error("Error cargando repos:", e); }
+        }
+
+        // Funcion para conectar con el WebSocket de Lanyard y mostrar el estado de Discord en tiempo real, incluyendo la actividad actual si es que esta programando en VS Code
+        function initLanyard() {
+            const dot = document.getElementById('status-dot');
+            const text = document.getElementById('status-text');
+
+            if (!CONFIG.DISCORD_ID) return console.error("Falta DISCORD_ID en config.js");
+
+            const ws = new WebSocket('wss://api.lanyard.rest/socket');
+
+            ws.onmessage = (event) => {
+                const res = JSON.parse(event.data);
+
+                // LOG DE SEGUIMIENTO
+                //console.log(">> Lanyard Op:", res.op, "Evento:", res.t || 'N/A');
+
+                if (res.op === 1) {
+                    console.log(">> Enviando suscripción para ID:", CONFIG.DISCORD_ID);
+                    ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: CONFIG.DISCORD_ID } }));
+
+                    setInterval(() => {
+                        ws.send(JSON.stringify({ op: 3 }));
+                    }, res.d.heartbeat_interval);
+                }
+
+                if (res.t === 'INIT_STATE' || res.t === 'PRESENCE_UPDATE') {
+                    //console.log(">> ¡DATOS RECIBIDOS!", res.d);
+                    const status = res.d.discord_status;
+
+                    // Si el estado llega, pero está vacío, Lanyard no te está trackeando
+                    if (!status) {
+                        console.warn(">> Ojo: Lanyard devolvió datos pero el estado es indefinido.");
+                        return;
+                    }
+
+                    const act = res.d.activities.find(a => a.name === 'Visual Studio Code');
+                    const colors = { online: 'bg-emerald-500', idle: 'bg-yellow-500', dnd: 'bg-red-500', offline: 'bg-zinc-700' };
+
+                    dot.className = `w-2 h-2 rounded-full animate-pulse ${colors[status]}`;
+                    text.innerText = act ? `Coding: ${act.details || 'Files'}` : status.toUpperCase();
+                }
+            };
+
+            ws.onerror = (err) => console.error(">> Error en WebSocket:", err);
+            ws.onclose = () => console.log(">> WebSocket cerrado. Reintentando en 5 segundos...") || setTimeout(initLanyard, 5000);
+        }
+
+        // Funcion para traer el clima actual de la ciudad definida en config.js usando la API de OpenWeatherMap
+        async function fetchWeather() {
+            try {
+                const res = await fetch('/api/weather');
+                const data = await res.json();
+
+                document.getElementById('weather-info').innerText = `${CONFIG.CITY}: ${Math.round(data.main.temp)}°C`;
+            } catch (e) { console.error("Error clima:", e); }
+        }
+
+        // Funcion para mostrar el badge de WakaTime con las estadisticas de programacion semanal del usuario definido en config.js
+        function fetchWakaTime() {
+            const container = document.getElementById('waka-stats');
+            container.innerHTML = `<img src="${CONFIG.WAKATIME_URL}" alt="WakaTime Stats" onerror="this.parentElement.innerText='Stats Offline'" class="hover:scale-105 transition-transform duration-300">`;
+        }
+
+        // Manejador del formulario de contacto, que envia los datos a Formspree y muestra un mensaje de confirmacion sin recargar la pagina
+        document.getElementById('contact-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('form-btn');
+            const msg = document.getElementById('form-msg');
+
+            btn.disabled = true;
+            btn.innerText = "ENVIANDO VÍA PROXY...";
+
+            try {
+                const res = await fetch('/api/contact', {
+                    method: 'POST',
+                    body: new FormData(e.target)
+                });
+
+                if (res.ok) {
+                    msg.innerText = ">> TRANSMISIÓN COMPLETADA. STATUS: 200 OK";
+                    msg.className = "text-[10px] mt-4 text-emerald-500 block";
+                    e.target.reset();
+                } else {
+                    msg.innerText = ">> ERROR CRÍTICO EN EL BACKEND.";
+                    msg.className = "text-[10px] mt-4 text-red-500 block";
+                }
+            } catch (error) {
+                msg.innerText = ">> ERROR DE RED: TRANSMISIÓN FALLIDA.";
+                msg.className = "text-[10px] mt-4 text-red-500 block";
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "ENVIAR TRANSMISIÓN";
+            }
+        });
+
+        // Aqui se llaman las funciones para cargar los datos de GitHub, Lanyard, clima y WakaTime al cargar la pagina
+        // Si se desactiva alguna API, simplemente se comenta la funcion correspondiente sin afectar a las demas
+        fetchGitHub();
+        initLanyard();
+        fetchWeather();
+        fetchWakaTime();
+    </script>
+</body>
+
+</html>
