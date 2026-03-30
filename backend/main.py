@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import httpx
 import os
 import re
+from urllib.parse import quote
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -23,6 +24,8 @@ WEATHER_KEY = os.getenv("WEATHER_KEY")
 DISCORD_ID = os.getenv("DISCORD_ID")
 FORMSPREE_ID = os.getenv("FORMSPREE_ID")
 CITY = os.getenv("CITY")
+WHATSAPP_NUMBER = os.getenv("WHATSAPP_NUMBER")
+WHATSAPP_TEXT = os.getenv("WHATSAPP_TEXT")
 
 @app.get("/api/status")
 async def get_status():
@@ -101,3 +104,15 @@ async def contact_proxy(request: Request):
     except Exception as e:
         print(f"!! ERROR CRÍTICO: {str(e)}")
         return {"error": "Internal Server Error"}, 500
+    
+@app.get("/api/whatsapp")
+async def contact_whatsapp():
+    if not WHATSAPP_NUMBER:
+        raise HTTPException(status_code=500, detail="WHATSAPP_NUMBER no configurado")
+    if not WHATSAPP_TEXT:
+        raise HTTPException(status_code=500, detail="WHATSAPP_TEXT no configurado")
+
+    encoded_text = quote(WHATSAPP_TEXT)
+    url = f"https://wa.me/{WHATSAPP_NUMBER}?text={encoded_text}"
+
+    return {"url": url}

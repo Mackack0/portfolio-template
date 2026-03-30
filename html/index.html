@@ -163,6 +163,17 @@
         </div>
     </section>
 
+    <!-- Botón de WhatsApp -->
+    <div class="fixed bottom-6 right-6 z-[101]">
+        <button onclick="contactWhatsApp()" aria-label="Contactar por WhatsApp"
+            class="group flex items-center gap-3 rounded-2xl border border-emerald-400/40 bg-emerald-500/90 px-4 py-3 text-black shadow-[0_12px_35px_rgba(16,185,129,0.35)] backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-300/70">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-black/15 text-xl">
+                <i class="fab fa-whatsapp"></i>
+            </span>
+            <span class="text-xs font-extrabold uppercase tracking-wider">WhatsApp</span>
+        </button>
+    </div>
+
     <!-- Footer De la Pagina Web -->
     <footer class="py-12 text-center text-[9px] text-zinc-600 uppercase tracking-[0.3em]">
         Template Portfolio // Personaliza este texto en index.html
@@ -241,7 +252,7 @@
                 //console.log(">> Lanyard Op:", res.op, "Evento:", res.t || 'N/A');
 
                 if (res.op === 1) {
-                    console.log(">> Enviando suscripción para ID:", CONFIG.DISCORD_ID);
+                    //console.log(">> Enviando suscripción para ID:", CONFIG.DISCORD_ID);
                     ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: CONFIG.DISCORD_ID } }));
 
                     setInterval(() => {
@@ -318,6 +329,32 @@
                 btn.innerText = "ENVIAR TRANSMISIÓN";
             }
         });
+
+        // Funcion para manejar el boton de contacto por WhatsApp, que redirige a la persona a una conversación directa con el numero definido en backend usando la API de wa.me
+        async function contactWhatsApp() {
+            try {
+                //console.log(">> Iniciando contacto por WhatsApp...");
+
+                const res = await fetch('/api/whatsapp');
+                const data = await res.json();
+
+                //console.log(">> Respuesta del backend:", data);
+
+                if (res.ok) {
+                    //console.log(">> Redirigiendo a WhatsApp con URL:", data.url);
+
+                    window.open(data.url, '_blank');
+                } else {
+                    //console.error(">> Error al traer enlace de WhatsApp:", data);
+
+                    alert("Error al generar el enlace de WhatsApp.");
+                }
+            } catch (e) {
+                console.error(">> Error de red al contactar por WhatsApp:", e);
+
+                //alert("Error de red al contactar por WhatsApp.");
+            }
+        }
 
         // Aqui se llaman las funciones para cargar los datos de GitHub, Lanyard, clima y WakaTime al cargar la pagina
         // Si se desactiva alguna API, simplemente se comenta la funcion correspondiente sin afectar a las demas
