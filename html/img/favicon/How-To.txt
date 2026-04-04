@@ -1,0 +1,8 @@
+En esta carpeta se deben guardar los iconos de la pagina.
+
+Para evitar problemas de compatibilidad, deben existir estas 3 variantes con el mismo nombre base:
+- favicon.ico
+- favicon.svg
+- favicon.png
+
+Si el sitio sirve los recursos desde /img/favicon/, coloca alli los archivos y mantén esos mismos nombres.

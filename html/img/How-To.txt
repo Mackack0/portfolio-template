@@ -1,0 +1,3 @@
+En esta carpeta se deben guardar las imagenes de los proyectos hardcodeados.
+
+Mantén aqui todos los recursos visuales que se cargan de forma fija desde el sitio.
