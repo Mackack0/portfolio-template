@@ -1,0 +1,27 @@
+{
+    "name": "portfolio",
+    "version": "1.0.0",
+    "description": "Este es un template base para un portafolio personal utilizando una arquitectura de microservicios con Docker.",
+    "main": "index.js",
+    "scripts": {
+        "build:css": "tailwindcss -i ./src/input.css -o ./html/styles.css --minify",
+        "watch:css": "tailwindcss -i ./src/input.css -o ./html/styles.css --watch",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mackack0/portfolio-template.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/mackack0/portfolio-template/issues"
+    },
+    "homepage": "https://github.com/mackack0/portfolio-template#readme",
+    "devDependencies": {
+        "autoprefixer": "^10.4.27",
+        "postcss": "^8.5.8",
+        "tailwindcss": "^3.4.17"
+    }
+}

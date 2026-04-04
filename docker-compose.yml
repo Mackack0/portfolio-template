@@ -19,7 +19,7 @@ services:
       - npm_default
     # Sin ports, NPM llegará por la red interna
 
-    # EL RECEPCIONISTA (NPM)
+  # EL RECEPCIONISTA (NPM)
   nginx-proxy-manager:
     image: 'jc21/nginx-proxy-manager:latest'
     container_name: nginx-proxy-manager
@@ -32,6 +32,22 @@ services:
       - ./letsencrypt:/etc/letsencrypt
     networks:
       - npm_default
+
+  # TAILWIND BUILDER (CSS Compilation)
+  tailwind-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile.tailwind
+    container_name: tailwind-builder
+    volumes:
+      - ./src:/app/src
+      - ./html:/app/html
+      - ./tailwind.config.js:/app/tailwind.config.js
+      - ./postcss.config.js:/app/postcss.config.js
+    networks:
+      - npm_default
+    # Runs in watch mode, rebuilds CSS on file changes
+
 
 networks:
   npm_default:
