@@ -11,7 +11,7 @@ const CONFIG = {
             shortDesc: 'Descripción breve del proyecto para mostrar en la tarjeta.',
             longDesc: 'Explica aquí el objetivo del proyecto, cómo lo construiste y qué problema resuelve. Puedes incluir decisiones técnicas, resultados y próximos pasos.',
             tech: ['Tecnologia 1', 'Tecnologia 2', 'Tecnologia 3'],
-            image: 'https://via.placeholder.com/600x400/111/00ff00?text=Tu+Proyecto',
+            image: '/img/proyecto1.png',
             link: 'https://github.com/tu-usuario/tu-repo'
         },
         {
