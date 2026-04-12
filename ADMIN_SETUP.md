@@ -81,7 +81,7 @@ docker compose up -d --build
 
 ### Acceso
 
-1. Ve a [http://tu-dominio/admin.html](http://tu-dominio/admin.html)
+1. Ve a [http://tu-dominio/admin](http://tu-dominio/admin), si es que se agrego la configuracion de nginx, si no entrar a /admin.html
 2. Ingresa tu contraseña de administrador.
 3. Quedarás autenticado durante la sesión.
 
