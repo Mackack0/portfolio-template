@@ -1,5 +1,6 @@
 # Secretos y Configuración Local
 .env
+backend/.env
 data/
 letsencrypt/
 __pycache__/

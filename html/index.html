@@ -183,32 +183,78 @@
     </footer>
 
     <!-- Script para manejar la logica de la pagina, incluyendo fetch de GitHub, Lanyard (Precencia en Discord) y el formulario de contacto -->
-    <script src="config.js?v=1.2"></script>
     <script>
-        // Renderizado dinamico de los proyectos definidos en config.js dentro del grid de proyectos principales
-        const grid = document.getElementById('projects-grid');
-        CONFIG.PROJECTS.forEach(p => {
-            grid.innerHTML += `
-                <div onclick="openModal('${p.id}')" class="bg-zinc-900/30 border border-zinc-800 p-8 rounded-xl hover:border-emerald-500/40 transition-all group cursor-pointer">
+        const CONFIG = {
+            DISCORD_ID: '',
+            CITY: '',
+            WAKATIME_URL: ''
+        };
+
+        // Variables globales para proyectos
+        let projects = [];
+
+        // Cargar configuración pública (sin secretos) desde backend
+        async function loadPublicConfig() {
+            try {
+                const res = await fetch('/api/public-config');
+                if (!res.ok) throw new Error(`Config API ${res.status}`);
+
+                const cfg = await res.json();
+                CONFIG.DISCORD_ID = cfg.discord_id || '';
+                CONFIG.CITY = cfg.city || '';
+                CONFIG.WAKATIME_URL = cfg.wakatime_url || '';
+
+                const weatherInfo = document.getElementById('weather-info');
+                if (weatherInfo && CONFIG.CITY) {
+                    weatherInfo.innerText = `${CONFIG.CITY}: --°C`;
+                }
+            } catch (e) {
+                console.error('Error cargando config pública:', e);
+            }
+        }
+
+        // Cargar proyectos desde la API
+        async function loadProjects() {
+            try {
+                const res = await fetch('/api/projects');
+                projects = await res.json();
+                renderProjects();
+            } catch (e) {
+                console.error("Error cargando proyectos:", e);
+            }
+        }
+
+        // Renderizar proyectos en el grid
+        function renderProjects() {
+            const grid = document.getElementById('projects-grid');
+            if (!projects.length) {
+                grid.innerHTML = '<p class="text-zinc-500">No hay proyectos disponibles aún</p>';
+                return;
+            }
+
+            grid.innerHTML = projects.map(p => `
+                <div onclick="openModal('${p.project_id}')" class="bg-zinc-900/30 border border-zinc-800 p-8 rounded-xl hover:border-emerald-500/40 transition-all group cursor-pointer">
                     <h3 class="text-xl font-bold text-white mb-2 group-hover:text-emerald-400">${p.title}</h3>
-                    <p class="text-xs text-zinc-500 mb-6">${p.shortDesc}</p>
+                    <p class="text-xs text-zinc-500 mb-6">${p.short_desc}</p>
                     <div class="flex gap-2">
-                        ${p.tech.map(t => `<span class="text-[9px] bg-zinc-950 px-2 py-1 rounded text-zinc-500 border border-zinc-800">${t}</span>`).join('')}
+                        ${(p.tech || []).map(t => `<span class="text-[9px] bg-zinc-950 px-2 py-1 rounded text-zinc-500 border border-zinc-800">${t}</span>`).join('')}
                     </div>
                 </div>
-            `;
-        });
+            `).join('');
+        }
 
-        // Funcion para abrir el modulo con detalles de proyecto (Lo llena dinamicamente segun el proyecto seleccionado)
-        function openModal(id) {
-            const p = CONFIG.PROJECTS.find(x => x.id === id);
+        // Funcion para abrir el modal con detalles de proyecto
+        function openModal(projectId) {
+            const p = projects.find(x => x.project_id === projectId);
+            if (!p) return;
+
             document.getElementById('modal-content').innerHTML = `
-                <img src="${p.image}" class="w-full h-48 object-cover opacity-80">
+                <img src="${p.image || 'https://via.placeholder.com/1200x400'}" class="w-full h-48 object-cover opacity-80">
                 <div class="p-8">
                     <h2 class="text-2xl font-bold text-white mb-4 italic">${p.title}</h2>
-                    <p class="text-sm text-zinc-400 leading-relaxed mb-6">${p.longDesc}</p>
+                    <p class="text-sm text-zinc-400 leading-relaxed mb-6">${p.long_desc}</p>
                     <div class="flex items-center justify-between">
-                         <div class="flex gap-2">${p.tech.map(t => `<span class="text-[10px] text-emerald-500">#${t}</span>`).join('')}</div>
+                         <div class="flex gap-2">${(p.tech || []).map(t => `<span class="text-[10px] text-emerald-500">#${t}</span>`).join('')}</div>
                          <a href="${p.link}" target="_blank" class="text-white hover:text-emerald-500 transition"><i class="fab fa-github text-xl"></i></a>
                     </div>
                 </div>
@@ -216,15 +262,67 @@
             document.getElementById('modal').classList.replace('hidden', 'flex');
         }
 
-        // Funcion para cerrar el modulo de detalles de proyecto
+        // Funcion para cerrar el modal de detalles de proyecto
         function closeModal() { document.getElementById('modal').classList.replace('flex', 'hidden'); }
 
-        // Funcion para traer los repositorios publicos de github del usuario, mostrando solo los 6 mas recientes que contengan el topic definido en config.js
+        // Cargar información personal desde la API
+        async function loadPersonalInfo() {
+            try {
+                const res = await fetch('/api/personal-info');
+                if (res.ok) {
+                    const info = await res.json();
+                    updatePersonalInfoUI(info);
+                }
+            } catch (e) {
+                console.error("Error cargando información personal:", e);
+            }
+        }
+
+        // Actualizar la interfaz con información personal
+        function updatePersonalInfoUI(info) {
+            // Actualizar título principal
+            const h1 = document.querySelector('h1');
+            if (h1) {
+                const parts = info.title.split(' & ');
+                h1.innerHTML = parts.length > 1
+                    ? `${parts[0]} & <span class="text-emerald-500">${parts[1]}</span>.`
+                    : info.title;
+            }
+
+            // Actualizar biografía corta
+            const shortBio = document.querySelector('.flex-1 > p');
+            if (shortBio) {
+                shortBio.textContent = info.short_bio || info.bio;
+            }
+
+            // Actualizar sección "Sobre mí"
+            const aboutSection = document.querySelector('#sobre-mi .grid');
+            if (aboutSection) {
+                aboutSection.innerHTML = `
+                    <p>${info.bio}</p>
+                    <div class="bg-black/40 p-6 rounded border border-zinc-800/50 text-emerald-500/80">
+                        > stack: [${(info.stack || []).join(', ')}]<br>
+                        > tools: [${(info.tools || []).join(', ')}]<br>
+                        > university: ${info.university}
+                    </div>
+                `;
+            }
+        }
+
+        // Funcion para traer los repositorios publicos de github del usuario, mostrando solo los 6 mas recientes que contengan el topic definido en backend/.env
         async function fetchGitHub() {
             try {
                 const res = await fetch('/api/github-projects');
+                if (!res.ok) {
+                    throw new Error(`GitHub API ${res.status}`);
+                }
                 const filtered = await res.json();
                 const ghGrid = document.getElementById('github-grid');
+
+                if (!Array.isArray(filtered) || filtered.length === 0) {
+                    ghGrid.innerHTML = '<p class="text-zinc-500 text-xs">No hay repositorios públicos para mostrar.</p>';
+                    return;
+                }
 
                 ghGrid.innerHTML = filtered.map(r => `
             <a href="${r.html_url}" target="_blank" class="p-4 bg-zinc-900/20 border border-zinc-900 rounded hover:border-zinc-700 transition-all">
@@ -236,7 +334,11 @@
                 </div>
             </a>
         `).join('');
-            } catch (e) { console.error("Error cargando repos:", e); }
+            } catch (e) {
+                const ghGrid = document.getElementById('github-grid');
+                ghGrid.innerHTML = '<p class="text-zinc-500 text-xs">No se pudieron cargar los repositorios ahora.</p>';
+                console.error("Error cargando repos:", e);
+            }
         }
 
         // Funcion para conectar con el WebSocket de Lanyard y mostrar el estado de Discord en tiempo real, incluyendo la actividad actual si es que esta programando en VS Code
@@ -244,7 +346,7 @@
             const dot = document.getElementById('status-dot');
             const text = document.getElementById('status-text');
 
-            if (!CONFIG.DISCORD_ID) return console.error("Falta DISCORD_ID en config.js");
+            if (!CONFIG.DISCORD_ID) return console.error("Falta DISCORD_ID en backend/.env");
 
             const ws = new WebSocket('wss://api.lanyard.rest/socket');
 
@@ -259,7 +361,7 @@
                     ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: CONFIG.DISCORD_ID } }));
 
                     setInterval(() => {
-                        ws.send(JSON.stringify({ op: 3 }));
+                        //ws.send(JSON.stringify({ op: 3 }));
                     }, res.d.heartbeat_interval);
                 }
 
@@ -285,7 +387,7 @@
             ws.onclose = () => console.log(">> WebSocket cerrado. Reintentando en 5 segundos...") || setTimeout(initLanyard, 5000);
         }
 
-        // Funcion para traer el clima actual de la ciudad definida en config.js usando la API de OpenWeatherMap
+        // Funcion para traer el clima actual
         async function fetchWeather() {
             try {
                 const res = await fetch('/api/weather');
@@ -295,17 +397,27 @@
             } catch (e) { console.error("Error clima:", e); }
         }
 
-        // Funcion para mostrar el badge de WakaTime con las estadisticas de programacion semanal del usuario definido en config.js
+        // Funcion para mostrar el badge de WakaTime con las estadisticas de programacion semanal del usuario definido en backend/.env
         function fetchWakaTime() {
             const container = document.getElementById('waka-stats');
+            if (!CONFIG.WAKATIME_URL) {
+                container.innerText = 'Stats Offline';
+                return;
+            }
             container.innerHTML = `<img src="${CONFIG.WAKATIME_URL}" alt="WakaTime Stats" onerror="this.parentElement.innerText='Stats Offline'" class="hover:scale-105 transition-transform duration-300">`;
         }
 
         // Manejador del formulario de contacto, que envia los datos a Formspree y muestra un mensaje de confirmacion sin recargar la pagina
         document.getElementById('contact-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('form-btn');
+            const btn = document.getElementById('btn-envio');
             const msg = document.getElementById('form-msg');
+            const formData = new FormData(e.target);
+
+            // Honeypot: si el bot completa este campo oculto, se aborta el envio.
+            if (formData.get('_gotcha')) {
+                return;
+            }
 
             btn.disabled = true;
             btn.innerText = "ENVIANDO VÍA PROXY...";
@@ -313,7 +425,7 @@
             try {
                 const res = await fetch('/api/contact', {
                     method: 'POST',
-                    body: new FormData(e.target)
+                    body: formData
                 });
 
                 if (res.ok) {
@@ -359,12 +471,20 @@
             }
         }
 
+
         // Aqui se llaman las funciones para cargar los datos de GitHub, Lanyard, clima y WakaTime al cargar la pagina
         // Si se desactiva alguna API, simplemente se comenta la funcion correspondiente sin afectar a las demas
-        fetchGitHub();
-        initLanyard();
-        fetchWeather();
-        fetchWakaTime();
+        async function bootstrap() {
+            await loadPublicConfig();
+            loadProjects();
+            loadPersonalInfo();
+            fetchGitHub();
+            initLanyard();
+            fetchWeather();
+            //fetchWakaTime();
+        }
+
+        bootstrap();
     </script>
 </body>
 

@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administracion | Portafolio</title>
+    <link rel="icon" href="/img/favicon/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/img/favicon/favicon.png" type="image/png" sizes="48x48">
+    <link rel="shortcut icon" href="/img/favicon/favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Estilos personalizados para el panel de administración (Para ser honesto, realizar el funcionamiento correcto de tailwindcss no resulto, y se rompio todo lo que habia, asi que quedan las funciones hardcodeadas hasta que pueda solucionar eso.)-->
+    <style>
+        .admin-shell {
+            font-family: 'Manrope', sans-serif;
+            font-size: 16.5px;
+            line-height: 1.45;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        .admin-shell {
+            background-image: radial-gradient(circle at 15% 20%, rgb(16 185 129 / 0.14), transparent 35%),
+                radial-gradient(circle at 85% 10%, rgb(20 184 166 / 0.12), transparent 30%);
+        }
+
+        .admin-card {
+            border: 1px solid rgb(63 63 70 / 0.8);
+            border-radius: 0.9rem;
+            background: rgb(24 24 27 / 0.7);
+            box-shadow: 0 10px 30px -15px rgba(16, 185, 129, 0.35);
+            padding: 1.25rem;
+        }
+
+        .login-card {
+            padding: 2.5rem !important;
+        }
+
+        .admin-title {
+            font-family: 'Sora', sans-serif;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.65rem;
+            border-bottom: 1px solid rgb(5 150 105 / 0.5);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.25;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.11em;
+            color: rgb(161 161 170);
+            line-height: 1.2;
+        }
+
+        .input-field {
+            width: 100%;
+            border: 1px solid rgb(63 63 70);
+            border-radius: 0.55rem;
+            background: rgb(24 24 27);
+            padding: 0.82rem 0.9rem;
+            color: #fff;
+            outline: none;
+            transition: border-color 0.15s ease;
+            line-height: 1.35;
+        }
+
+        .input-field:focus {
+            border-color: rgb(16 185 129);
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-danger,
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.55rem;
+            border: 1px solid;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.15s ease;
+            line-height: 1.1;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .btn-primary i,
+        .btn-secondary i,
+        .btn-danger i,
+        .tab-btn i {
+            line-height: 1;
+        }
+
+        .btn-primary {
+            border-color: rgb(16 185 129);
+            background: rgb(16 185 129);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: rgb(52 211 153);
+        }
+
+        .btn-secondary {
+            border-color: rgb(82 82 91);
+            background: rgb(39 39 42);
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: rgb(63 63 70);
+        }
+
+        .btn-danger {
+            border-color: rgb(239 68 68);
+            background: rgb(220 38 38);
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: rgb(239 68 68);
+        }
+
+        .tab-btn {
+            border-color: rgb(63 63 70);
+            background: rgb(24 24 27);
+            color: rgb(161 161 170);
+            padding: 0.62rem 1rem;
+        }
+
+        .tab-btn-active {
+            border-color: rgb(16 185 129);
+            background: rgb(16 185 129 / 0.15);
+            color: rgb(52 211 153);
+        }
+
+        .stat-card {
+            border: 1px solid rgb(5 150 105 / 0.4);
+            border-radius: 0.75rem;
+            background: rgb(16 185 129 / 0.1);
+            padding: 1.25rem;
+        }
+
+        .soft-panel {
+            border: 1px solid rgb(63 63 70);
+            border-radius: 0.75rem;
+            background: rgb(24 24 27 / 0.7);
+            padding: 1.15rem;
+        }
+
+        .tabs-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            align-items: center;
+            margin-bottom: 2.4rem;
+            padding-bottom: 0.7rem;
+            border-bottom: 1px solid rgb(63 63 70);
+        }
+
+        .quick-action-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .quick-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 2.45rem;
+            border: 1px solid rgb(63 63 70);
+            border-radius: 0.55rem;
+            background: rgb(39 39 42);
+            padding: 0.55rem 0.9rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgb(212 212 216);
+            transition: all 0.15s ease;
+        }
+
+        .quick-action-btn:hover {
+            border-color: rgb(16 185 129);
+            background: rgb(16 185 129);
+            color: #000;
+            transform: translateY(-1px);
+        }
+
+        .status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 2.7rem;
+            border: 1px solid rgb(63 63 70);
+            border-radius: 0.55rem;
+            background: rgb(24 24 27);
+            padding: 0.55rem 0.85rem;
+        }
+
+        .activity-item,
+        .project-item,
+        .message-item {
+            border: 1px solid rgb(63 63 70);
+            border-radius: 0.5rem;
+            background: rgb(24 24 27);
+        }
+
+        .activity-item {
+            padding: 0.8rem 0.9rem;
+        }
+
+        .project-item,
+        .message-item {
+            padding: 1.1rem;
+        }
+
+        .message-item.message-item-unread {
+            border-color: rgb(239 68 68 / 0.5);
+            background: rgb(239 68 68 / 0.06);
+        }
+
+        .action-btn,
+        .action-btn-danger {
+            display: inline-flex;
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            border: 1px solid;
+            padding: 0.55rem 0.8rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            line-height: 1;
+            transition: all 0.15s ease;
+        }
+
+        .action-btn {
+            border-color: rgb(82 82 91);
+            background: rgb(39 39 42);
+            color: #fff;
+        }
+
+        .action-btn:hover {
+            background: rgb(63 63 70);
+        }
+
+        .action-btn-danger {
+            border-color: rgb(239 68 68);
+            background: rgb(220 38 38);
+            color: #fff;
+        }
+
+        .action-btn-danger:hover {
+            background: rgb(239 68 68);
+        }
+
+        @media (max-width: 640px) {
+            .admin-shell {
+                font-size: 16px;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+
+            .quick-action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="admin-shell bg-zinc-950 text-zinc-300">
+
+    <!-- Ventana de Acceso -->
+    <div id="login"
+        class="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-950 to-zinc-900 px-4">
+        <div class="admin-card login-card w-full max-w-md backdrop-blur">
+            <h1 class="mb-8 text-center text-2xl font-bold text-emerald-400"><i class="fas fa-lock"></i> Acceso
+                Administrador</h1>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="mb-5">
+                    <label class="input-label" for="password">Contrasena</label>
+                    <input class="input-field" type="password" id="password" name="password" required
+                        placeholder="Ingresa la contraseña de admin">
+                </div>
+                <button type="submit" class="btn-primary w-full">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="hidden min-h-screen bg-zinc-950">
+        <div
+            class="sticky top-0 z-50 flex items-center justify-between border-b border-zinc-700 bg-zinc-900/90 px-5 py-5 backdrop-blur">
+            <h1 class="text-xl font-bold text-emerald-400"><i class="fas fa-tachometer-alt"></i> Panel de Administracion
+            </h1>
+            <button class="btn-danger gap-2 px-4 py-2" onclick="logout()"><i class="fas fa-sign-out-alt"></i>
+                <span>Salir</span></button>
+        </div>
+        <!-- CONTENIDO DE LA DASHBOARD -->
+        <div class="mx-auto w-full max-w-7xl px-6 py-10 lg:px-8">
+            <div class="tabs-row">
+                <button class="tab-btn tab-btn-active" data-tab="overview"
+                    onclick="switchTab('overview', this)">Resumen</button>
+                <button class="tab-btn" data-tab="personal" onclick="switchTab('personal', this)">Info Personal</button>
+                <button class="tab-btn" data-tab="projects" onclick="switchTab('projects', this)">Proyectos</button>
+                <button class="tab-btn" data-tab="messages" onclick="switchTab('messages', this)">Mensajes</button>
+                <button class="tab-btn" data-tab="deploy" onclick="switchTab('deploy', this)">Despliegue</button>
+            </div>
+
+            <!-- RESUMEN -->
+            <div id="overview" class="tab-content">
+                <div class="mb-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="stat-card">
+                        <div class="mb-1 text-3xl font-bold text-emerald-400" id="total-messages">0</div>
+                        <div class="text-xs uppercase tracking-widest text-zinc-400">Mensajes Totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="mb-1 text-3xl font-bold text-emerald-400" id="unread-messages">0</div>
+                        <div class="text-xs uppercase tracking-widest text-zinc-400">No Leidos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="mb-1 text-3xl font-bold text-emerald-400" id="total-projects">0</div>
+                        <div class="text-xs uppercase tracking-widest text-zinc-400">Proyectos</div>
+                    </div>
+                </div>
+
+                <div class="grid gap-5 lg:grid-cols-2">
+                    <!-- Sección de Acciones Rápidas -->
+                    <div class="soft-panel">
+                        <h3 class="mb-4 text-sm font-bold text-white">Acciones Rapidas</h3>
+                        <div class="quick-action-grid">
+                            <button type="button" class="quick-action-btn" onclick="switchTab('projects')">Nuevo
+                                proyecto</button>
+                            <button type="button" class="quick-action-btn" onclick="switchTab('messages')">Ver
+                                mensajes</button>
+                            <button type="button" class="quick-action-btn" onclick="switchTab('deploy')">Ir a
+                                despliegue</button>
+                            <button type="button" class="quick-action-btn" onclick="window.open('/', '_blank')">Abrir
+                                sitio</button>
+                        </div>
+                    </div>
+
+                    <div class="soft-panel">
+                        <!-- Seccion estado de Servicios -->
+                        <h3 class="mb-4 text-sm font-bold text-white">Estado de Servicios</h3>
+                        <div class="grid gap-2">
+                            <div class="status-row">
+                                <span>Backend</span><span id="svc-backend"
+                                    class="text-xs font-bold uppercase tracking-widest text-zinc-500">Comprobando...</span>
+                            </div>
+                            <div class="status-row">
+                                <span>GitHub API</span><span id="svc-github"
+                                    class="text-xs font-bold uppercase tracking-widest text-zinc-500">Comprobando...</span>
+                            </div>
+                            <div class="status-row">
+                                <span>Clima</span><span id="svc-weather"
+                                    class="text-xs font-bold uppercase tracking-widest text-zinc-500">Comprobando...</span>
+                            </div>
+                            <div class="status-row">
+                                <span>Discord</span><span id="svc-discord"
+                                    class="text-xs font-bold uppercase tracking-widest text-zinc-500">Comprobando...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- SECCIÓN DE ACTIVIDAD RECENTE -->
+                <div class="soft-panel mt-5 p-6">
+                    <h2 class="admin-title mb-4">Actividad Reciente
+                    </h2>
+                    <div id="recent-activity" class="grid gap-2">
+                        <div class="rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-300">
+                            Cargando actividad...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VENTANA DE INFORMACIÓN PERSONAL -->
+            <div id="personal" class="tab-content hidden">
+                <div class="admin-card mb-6">
+                    <h2 class="admin-title">Editar Informacion
+                        Personal</h2>
+                    <form id="personal-form" onsubmit="handlePersonalInfo(event)">
+                        <div class="mb-4 hidden rounded-md border px-4 py-3 text-sm" id="personal-alert"></div>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="mb-4">
+                                <label class="input-label" for="name">Nombre</label>
+                                <input class="input-field" type="text" id="name" name="name" required
+                                    placeholder="Tu nombre completo">
+                            </div>
+                            <div class="mb-4">
+                                <label class="input-label" for="title">Titulo</label>
+                                <input class="input-field" type="text" id="title" name="title" required
+                                    placeholder="ej: Software & VR Developer">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="input-label" for="short_bio">Bio Corta</label>
+                            <textarea class="input-field min-h-24" id="short_bio" name="short_bio"
+                                placeholder="Introduccion breve..."></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="input-label" for="bio">Bio
+                                Completa</label>
+                            <textarea class="input-field min-h-24" id="bio" name="bio"
+                                placeholder="Biografia mas extensa..."></textarea>
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="mb-4">
+                                <label class="input-label" for="stack">Stack Tecnologico (separado por comas)</label>
+                                <input class="input-field" type="text" id="stack" name="stack"
+                                    placeholder="Python, Docker, JavaScript...">
+                            </div>
+                            <div class="mb-4">
+                                <label class="input-label" for="tools">Herramientas (separadas por comas)</label>
+                                <input class="input-field" type="text" id="tools" name="tools"
+                                    placeholder="VS Code, Git, Linux...">
+                            </div>
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="mb-4">
+                                <label class="input-label" for="university">Universidad</label>
+                                <input class="input-field" type="text" id="university" name="university"
+                                    placeholder="Tu universidad...">
+                            </div>
+                            <div class="mb-4">
+                                <label class="input-label" for="location">Ubicacion</label>
+                                <input class="input-field" type="text" id="location" name="location"
+                                    placeholder="Ciudad, Pais...">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary w-full">Guardar
+                            Info Personal</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- VENTANA DE PROYECTOS -->
+            <div id="projects" class="tab-content hidden">
+                <div class="admin-card mb-6">
+                    <h2 class="admin-title">Agregar Nuevo
+                        Proyecto</h2>
+                    <form id="project-form" onsubmit="handleAddProject(event)">
+                        <div class="mb-4 hidden rounded-md border px-4 py-3 text-sm" id="project-alert"></div>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="mb-4">
+                                <label class="input-label" for="project-id">ID del Proyecto (unico)</label>
+                                <input class="input-field" type="text" id="project-id" name="project_id" required
+                                    placeholder="ej: mi-proyecto">
+                            </div>
+                            <div class="mb-4">
+                                <label class="input-label" for="project-title">Titulo del Proyecto</label>
+                                <input class="input-field" type="text" id="project-title" name="title" required
+                                    placeholder="Nombre del proyecto...">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="input-label" for="project-short">Descripcion Corta</label>
+                            <textarea class="input-field min-h-24" id="project-short" name="short_desc"
+                                placeholder="Descripcion breve..." required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="input-label" for="project-long">Descripcion Larga</label>
+                            <textarea class="input-field min-h-24" id="project-long" name="long_desc"
+                                placeholder="Descripcion detallada..." required></textarea>
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="mb-4">
+                                <label class="input-label" for="project-tech">Tecnologias (separadas por comas)</label>
+                                <input class="input-field" type="text" id="project-tech" name="tech"
+                                    placeholder="Python, Docker, React..." required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="input-label" for="project-image">URL de Imagen</label>
+                                <input class="input-field" type="text" id="project-image" name="image"
+                                    placeholder="https://..." oninput="updateProjectImagePreview()">
+                            </div>
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div class="mb-4 rounded-lg border border-emerald-700/40 bg-emerald-500/5 p-4">
+                                <label class="input-label" for="project-image-select">Elegir de la galeria</label>
+                                <select id="project-image-select" class="input-field"
+                                    onchange="selectExistingImage(this.value)">
+                                    <option value="">Selecciona una imagen guardada</option>
+                                </select>
+                                <div class="mt-2 text-xs text-zinc-400">Seleccionar una imagen copia automaticamente su
+                                    ruta.</div>
+                                <button type="button" class="btn-secondary mt-3 px-3 py-2"
+                                    onclick="loadImageOptions()">Recargar galeria</button>
+                            </div>
+                            <div class="mb-4 rounded-lg border border-emerald-700/40 bg-emerald-500/5 p-4">
+                                <label class="input-label" for="project-image-file">Subir a la galeria</label>
+                                <div class="flex items-center gap-2">
+                                    <label for="project-image-file" class="btn-secondary !m-0 !w-auto px-3 py-2">Elegir
+                                        archivo</label>
+                                    <span id="project-image-file-name"
+                                        class="flex min-h-10 flex-1 items-center overflow-hidden rounded-md border border-dashed border-zinc-600 bg-zinc-900 px-3 text-xs text-zinc-400 text-ellipsis whitespace-nowrap">Ningun
+                                        archivo
+                                        seleccionado</span>
+                                    <input type="file" id="project-image-file" accept=".png,.jpg,.jpeg,.webp,.gif,.svg"
+                                        class="hidden" onchange="onProjectImageSelected()">
+                                </div>
+                                <div class="mt-2 text-xs text-zinc-400">Formatos: PNG, JPG, WEBP, GIF, SVG.</div>
+                                <button type="button" class="btn-primary mt-3 px-3 py-2"
+                                    onclick="uploadProjectImage()">Subir y
+                                    usar</button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="input-label">Vista
+                                previa</label>
+                            <div id="project-image-preview"
+                                class="flex min-h-40 items-center justify-center overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 text-xs text-zinc-500">
+                                Sin imagen seleccionada</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="input-label" for="project-link">Enlace GitHub/Demo</label>
+                            <input class="input-field" type="text" id="project-link" name="link"
+                                placeholder="https://github.com/..." required>
+                        </div>
+
+                        <button type="submit" class="btn-primary w-full px-4 py-3">Agregar
+                            Proyecto</button>
+                        <button type="button" id="project-cancel-edit" class="btn-secondary mt-3 hidden w-full"
+                            onclick="resetProjectForm()">Cancelar
+                            edicion</button>
+                    </form>
+                </div>
+
+                <div class="admin-card">
+                    <h2 class="admin-title">Proyectos</h2>
+                    <div id="projects-list" class="grid gap-4"></div>
+                </div>
+            </div>
+
+            <!-- Ventana de mensajes -->
+            <div id="messages" class="tab-content hidden">
+                <div class="admin-card">
+                    <h2 class="admin-title">Mensajes de
+                        Contacto</h2>
+                    <div id="messages-list"></div>
+                </div>
+            </div>
+
+            <!-- Ventana de despliegue -->
+            <div id="deploy" class="tab-content hidden">
+                <div class="admin-card border-2 border-red-600/60 bg-red-500/10">
+                    <h2 class="mb-4 text-lg font-bold text-white">Configuracion de Despliegue</h2>
+                    <p class="mb-5 text-sm text-zinc-400">⚠️ Esto reconstruira y reiniciara todos los
+                        contenedores Docker.
+                        Primero se creara un respaldo de la base de datos.
+                        (Esto puede tardar unos minutos, no cierres esta ventana ni apagues el servidor durante el
+                        proceso)
+                    </p>
+                    <div class="mb-4 hidden rounded-md border px-4 py-3 text-sm" id="deploy-alert"></div>
+                    <button class="btn-danger px-5" id="deploy-btn" onclick="deployApp()">
+                        <i class="fas fa-rocket"></i> Desplegar Ahora
+                    </button>
+                    <div id="deploy-status" class="mt-4 text-xs text-zinc-400"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let authToken = null;
+        let cachedProjects = [];
+        let cachedMessages = [];
+        let editingProjectId = null;
+
+        // Funciones de autenticación
+        async function handleLogin(event) {
+            event.preventDefault();
+            const password = document.getElementById('password').value.trim();
+
+            try {
+                const response = await fetch('/api/admin/auth-check', {
+                    headers: {
+                        'Authorization': `Bearer ${password}`
+                    }
+                });
+
+                if (response.ok) {
+                    authToken = password;
+                    localStorage.setItem('authToken', password);
+                    showLogin(false);
+                    loadDashboard();
+                } else {
+                    alert('Contrasena invalida');
+                }
+            } catch (err) {
+                console.error('Error de login:', err);
+                alert('Fallo el inicio de sesion');
+            }
+        }
+
+        // Funcion para cerrar sesion
+        function logout() {
+            authToken = null;
+            localStorage.removeItem('authToken');
+            showLogin(true);
+            document.getElementById('login-form').reset();
+        }
+
+        // Funcion para mostrar u ocultar la ventana de login y dashboard
+        function showLogin(show) {
+            document.getElementById('login').classList.toggle('hidden', !show);
+            document.getElementById('dashboard').classList.toggle('hidden', show);
+        }
+
+        // Funcion para revisar autenticación al cargar la página para mantener la sesión iniciada
+        window.addEventListener('load', async () => {
+            const savedToken = localStorage.getItem('authToken');
+            if (savedToken) {
+                authToken = savedToken.trim();
+                try {
+                    const check = await apiCall('/api/admin/auth-check');
+                    if (check.ok) {
+                        showLogin(false);
+                        loadDashboard();
+                        return;
+                    }
+                } catch (err) {
+                    logout();
+                }
+            } else {
+                showLogin(true);
+            }
+        });
+
+        // funcion para cambiar entre pestañas
+        function switchTab(tabName, clickedButton = null) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-btn-active');
+            });
+
+            document.getElementById(tabName).classList.remove('hidden');
+            const targetButton = clickedButton || document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+            if (targetButton) {
+                targetButton.classList.add('tab-btn-active');
+            }
+        }
+
+        // Funcion de apoyo para llamadas a la API con autenticacion
+        async function apiCall(endpoint, method = 'GET', data = null) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                }
+            };
+
+            if (data) options.body = JSON.stringify(data);
+
+            const response = await fetch(endpoint, options);
+            if (response.status === 401) {
+                logout();
+                throw new Error('No autorizado');
+            }
+            return response;
+        }
+
+        // Funciones de interfaz
+        function showAlert(elementId, message, type = 'success') {
+            const alert = document.getElementById(elementId);
+            alert.textContent = message;
+            alert.className = 'mb-4 rounded-md border px-4 py-3 text-sm';
+            alert.classList.remove('hidden');
+            if (type === 'success') {
+                alert.classList.add('border-emerald-500/40', 'bg-emerald-500/10', 'text-emerald-400');
+            } else {
+                alert.classList.add('border-red-500/40', 'bg-red-500/10', 'text-red-400');
+            }
+            setTimeout(() => alert.classList.add('hidden'), 5000);
+        }
+
+        // Funciones para cargar datos y actualizar la dashboard
+        async function loadDashboard() {
+            await loadPersonalInfo();
+            await loadProjects();
+            await loadImageOptions();
+            updateProjectImagePreview();
+            await loadMessages();
+            await updateStats();
+            await updateServiceStatus();
+            renderRecentActivity();
+        }
+
+        // Funcion para actualizar el estado de los servicios
+        function setServiceStatus(elementId, ok, okText = 'Operativo', failText = 'Error') {
+            const el = document.getElementById(elementId);
+            el.textContent = ok ? okText : failText;
+            el.classList.remove('text-zinc-500', 'text-emerald-400', 'text-red-400');
+            el.classList.add(ok ? 'text-emerald-400' : 'text-red-400');
+        }
+
+        // Funcion para verificar el estado de los servicios externos y del backend
+        async function updateServiceStatus() {
+            try {
+                const backend = await fetch('/api/status');
+                setServiceStatus('svc-backend', backend.ok);
+            } catch (e) {
+                setServiceStatus('svc-backend', false);
+            }
+
+            try {
+                const github = await fetch('/api/github-projects');
+                setServiceStatus('svc-github', github.ok);
+            } catch (e) {
+                setServiceStatus('svc-github', false);
+            }
+
+            try {
+                const weather = await fetch('/api/weather');
+                setServiceStatus('svc-weather', weather.ok);
+            } catch (e) {
+                setServiceStatus('svc-weather', false);
+            }
+
+            try {
+                const discord = await fetch('/api/discord-status');
+                setServiceStatus('svc-discord', discord.ok);
+            } catch (e) {
+                setServiceStatus('svc-discord', false);
+            }
+        }
+
+        // Funcion para actualizar las estadisticas del dashboard
+        function renderRecentActivity() {
+            const container = document.getElementById('recent-activity');
+            const activities = [];
+
+            if (cachedMessages.length) {
+                cachedMessages.slice(0, 4).forEach(msg => {
+                    activities.push({
+                        title: `Mensaje de ${msg.name || 'Sin nombre'}`,
+                        meta: `${msg.email || 'sin email'} • ${new Date(msg.created_at).toLocaleString()}`
+                    });
+                });
+            }
+
+            if (cachedProjects.length) {
+                const sortedProjects = [...cachedProjects].sort((a, b) => {
+                    const da = new Date(a.updated_at || a.created_at || 0).getTime();
+                    const db = new Date(b.updated_at || b.created_at || 0).getTime();
+                    return db - da;
+                });
+                const latest = sortedProjects[0];
+                if (latest) {
+                    activities.unshift({
+                        title: `Proyecto actualizado: ${latest.title}`,
+                        meta: `${latest.project_id} • ${new Date(latest.updated_at || latest.created_at).toLocaleString()}`
+                    });
+                }
+            }
+
+            if (!activities.length) {
+                container.innerHTML = '<div class="activity-item text-sm text-zinc-300">Aun no hay actividad reciente.</div>';
+                return;
+            }
+
+            container.innerHTML = activities.slice(0, 6).map(a => `
+                <div class="activity-item text-sm text-zinc-300">
+                    <div>${a.title}</div>
+                    <div class="mt-1 text-xs text-zinc-400">${a.meta}</div>
+                </div>
+            `).join('');
+        }
+
+        // Funcion para cargar las opciones de imagenes disponibles en la galeria para los proyectos
+        async function loadImageOptions(selectedValue = '') {
+            const select = document.getElementById('project-image-select');
+            const current = selectedValue || document.getElementById('project-image').value || '';
+
+            try {
+                const response = await apiCall('/api/admin/images');
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar la lista de imagenes');
+                }
+
+                const data = await response.json();
+                const images = Array.isArray(data.images) ? data.images : [];
+
+                if (!images.length) {
+                    select.innerHTML = '<option value="">No hay imagenes en la galeria</option>';
+                    return;
+                }
+
+                select.innerHTML = '<option value="">Selecciona una imagen guardada</option>' +
+                    images.map(img => `<option value="${img}">${img}</option>`).join('');
+
+                if (current && images.includes(current)) {
+                    select.value = current;
+                }
+            } catch (err) {
+                console.error('Error cargando imagenes:', err);
+                showAlert('project-alert', 'No se pudo cargar la lista de imagenes', 'error');
+            }
+        }
+
+        // Funcion que se llama al seleccionar una imagen de la galeria para copiar su ruta al input de imagen del proyecto
+        function selectExistingImage(path) {
+            if (!path) return;
+            document.getElementById('project-image').value = path;
+            updateProjectImagePreview();
+        }
+
+        //Funcion para normalizar la ruta de la imagen para la vista previa, agregando '/' al inicio si es una ruta relativa y validando URLs completas
+        function normalizeImageUrl(path) {
+            const value = (path || '').trim();
+            if (!value) return '';
+            if (value.startsWith('http://') || value.startsWith('https://') || value.startsWith('/')) {
+                return value;
+            }
+            return '/' + value;
+        }
+
+        // Funcion para actualizar la vista previa de la imagen del proyecto segun la ruta ingresada o seleccionada y mostrar mensajes de error si no se puede cargar la imagen
+        function updateProjectImagePreview() {
+            const preview = document.getElementById('project-image-preview');
+            const value = document.getElementById('project-image').value;
+            const src = normalizeImageUrl(value);
+
+            if (!src) {
+                preview.classList.add('text-zinc-500');
+                preview.innerHTML = 'Sin imagen seleccionada';
+                return;
+            }
+
+            preview.classList.remove('text-zinc-500');
+            preview.innerHTML = `<img class="max-h-56 w-full object-cover" src="${src}" alt="Vista previa de imagen" onerror="this.parentElement.classList.add('text-zinc-500'); this.parentElement.innerHTML='No se pudo cargar la imagen';">`;
+        }
+
+        // Funcion que se llama al seleccionar un archivo para subir a la galeria, muestra el nombre del archivo seleccionado o un mensaje si no se selecciono ninguno
+        function onProjectImageSelected() {
+            const fileInput = document.getElementById('project-image-file');
+            const fileName = document.getElementById('project-image-file-name');
+
+            if (!fileInput.files.length) {
+                fileName.textContent = 'Ningun archivo seleccionado';
+                return;
+            }
+
+            fileName.textContent = fileInput.files[0].name;
+        }
+
+        // Funcion para subir la imagen seleccionada a la galeria, actualiza la lista de imagenes disponibles, selecciona la nueva imagen y muestra mensajes de exito o error segun corresponda
+        async function uploadProjectImage() {
+            const fileInput = document.getElementById('project-image-file');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showAlert('project-alert', 'Selecciona un archivo primero', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await fetch('/api/admin/images', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+
+                if (response.status === 401) {
+                    logout();
+                    throw new Error('No autorizado');
+                }
+
+                if (!response.ok) {
+                    const err = await response.text();
+                    throw new Error(err || 'Error subiendo imagen');
+                }
+
+                const data = await response.json();
+                document.getElementById('project-image').value = data.path;
+                fileInput.value = '';
+                document.getElementById('project-image-file-name').textContent = 'Ningun archivo seleccionado';
+                await loadImageOptions(data.path);
+                updateProjectImagePreview();
+                showAlert('project-alert', 'Imagen subida correctamente', 'success');
+            } catch (err) {
+                showAlert('project-alert', 'Error al subir imagen: ' + err.message, 'error');
+            }
+        }
+
+        // Funcion para cargar la informacion personal actual y mostrarla en el formulario para editarla informacion personal del admin, muestra mensajes de error en la consola si no se pueden cargar los datos
+        async function loadPersonalInfo() {
+            try {
+                const response = await fetch('/api/personal-info');
+                if (response.ok) {
+                    const info = await response.json();
+                    document.getElementById('name').value = info.name || '';
+                    document.getElementById('title').value = info.title || '';
+                    document.getElementById('short_bio').value = info.short_bio || '';
+                    document.getElementById('bio').value = info.bio || '';
+                    document.getElementById('stack').value = (info.stack || []).join(', ');
+                    document.getElementById('tools').value = (info.tools || []).join(', ');
+                    document.getElementById('university').value = info.university || '';
+                    document.getElementById('location').value = info.location || '';
+                }
+            } catch (err) {
+                console.error('Error loading personal info:', err);
+            }
+        }
+
+        // Funcion que se llama al enviar el formulario de informacion personal para actualizar los datos personales del admin, muestra mensajes de exito o error segun corresponda
+        async function handlePersonalInfo(event) {
+            event.preventDefault();
+
+            const data = {
+                name: document.getElementById('name').value,
+                title: document.getElementById('title').value,
+                short_bio: document.getElementById('short_bio').value,
+                bio: document.getElementById('bio').value,
+                stack: document.getElementById('stack').value.split(',').map(s => s.trim()),
+                tools: document.getElementById('tools').value.split(',').map(s => s.trim()),
+                university: document.getElementById('university').value,
+                location: document.getElementById('location').value
+            };
+
+            try {
+                const response = await apiCall('/api/admin/personal-info', 'PUT', data);
+                if (response.ok) {
+                    showAlert('personal-alert', 'Informacion personal actualizada correctamente', 'success');
+                } else {
+                    showAlert('personal-alert', 'Error al actualizar la informacion personal', 'error');
+                }
+            } catch (err) {
+                showAlert('personal-alert', 'Error: ' + err.message, 'error');
+            }
+        }
+
+        // Funcion para cargar la lista de proyectos actuales y mostrarlos en la seccion de proyectos, guarda los proyectos en cache para usarlos en otras funciones como editar proyectos o mostrar actividad reciente, muestra mensajes de error en la consola si no se pueden cargar los proyectos
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/projects');
+                if (response.ok) {
+                    const projects = await response.json();
+                    cachedProjects = projects;
+                    const list = document.getElementById('projects-list');
+                    list.innerHTML = projects.map(p => `
+                <div class="project-item">
+                    <h3 class="mb-3 text-lg font-bold text-white">${p.title}</h3>
+                    <p><strong>ID:</strong> ${p.project_id}</p>
+                    <p><strong>Corta:</strong> ${p.short_desc}</p>
+                    <p><strong>Tecnologias:</strong> ${(p.tech || []).join(', ')}</p>
+                    <div class="mt-4 flex gap-2">
+                        <button class="action-btn" onclick="editProject('${p.project_id}')">Editar</button>
+                        <button class="action-btn-danger" onclick="deleteProject('${p.project_id}')">Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+                    renderRecentActivity();
+                }
+            } catch (err) {
+                console.error('Error cargando proyectos:', err);
+            }
+        }
+
+        // Funcion que se llama al enviar el formulario de proyecto para agregar un nuevo proyecto o guardar los cambios de un proyecto existente segun el estado actual del formulario, muestra mensajes de exito o error segun corresponda
+        async function handleAddProject(event) {
+            event.preventDefault();
+
+            const data = {
+                title: document.getElementById('project-title').value,
+                short_desc: document.getElementById('project-short').value,
+                long_desc: document.getElementById('project-long').value,
+                tech: document.getElementById('project-tech').value.split(',').map(s => s.trim()),
+                image: document.getElementById('project-image').value,
+                link: document.getElementById('project-link').value
+            };
+
+            try {
+                let response;
+                if (editingProjectId) {
+                    response = await apiCall(`/api/admin/projects/${editingProjectId}`, 'PUT', data);
+                } else {
+                    data.project_id = document.getElementById('project-id').value;
+                    response = await apiCall('/api/admin/projects', 'POST', data);
+                }
+
+                if (response.ok) {
+                    showAlert('project-alert', editingProjectId ? 'Proyecto actualizado correctamente' : 'Proyecto agregado correctamente', 'success');
+                    resetProjectForm();
+                    loadProjects();
+                } else {
+                    showAlert('project-alert', editingProjectId ? 'Error al actualizar proyecto' : 'Error al agregar proyecto', 'error');
+                }
+            } catch (err) {
+                showAlert('project-alert', 'Error: ' + err.message, 'error');
+            }
+        }
+
+        // Funcion para cargar los datos del proyecto en el formulario para editar
+        function editProject(projectId) {
+            const project = cachedProjects.find(p => p.project_id === projectId);
+            if (!project) {
+                showAlert('project-alert', 'No se pudo cargar el proyecto a editar', 'error');
+                return;
+            }
+
+            editingProjectId = project.project_id;
+            document.getElementById('project-id').value = project.project_id;
+            document.getElementById('project-id').disabled = true;
+            document.getElementById('project-title').value = project.title || '';
+            document.getElementById('project-short').value = project.short_desc || '';
+            document.getElementById('project-long').value = project.long_desc || '';
+            document.getElementById('project-tech').value = (project.tech || []).join(', ');
+            document.getElementById('project-image').value = project.image || '';
+            document.getElementById('project-link').value = project.link || '';
+
+            loadImageOptions(project.image || '');
+            updateProjectImagePreview();
+
+            const submitButton = document.querySelector('#project-form button[type="submit"]');
+            submitButton.textContent = 'Guardar cambios';
+
+            document.getElementById('project-cancel-edit').classList.remove('hidden');
+            document.getElementById('project-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Funcion para resetear el formulario de proyecto a su estado inicial
+        function resetProjectForm() {
+            editingProjectId = null;
+            document.getElementById('project-form').reset();
+            document.getElementById('project-id').disabled = false;
+            document.getElementById('project-image-file-name').textContent = 'Ningun archivo seleccionado';
+            document.getElementById('project-cancel-edit').classList.add('hidden');
+
+            const submitButton = document.querySelector('#project-form button[type="submit"]');
+            submitButton.textContent = 'Agregar Proyecto';
+
+            loadImageOptions();
+            updateProjectImagePreview();
+        }
+
+        // Funcion para eliminar un proyecto
+        async function deleteProject(projectId) {
+            if (!confirm('Seguro que quieres eliminar este proyecto?')) return;
+
+            try {
+                const response = await apiCall(`/api/admin/projects/${projectId}`, 'DELETE');
+                if (response.ok) {
+                    showAlert('project-alert', 'Proyecto eliminado', 'success');
+                    if (editingProjectId === projectId) {
+                        resetProjectForm();
+                    }
+                    loadProjects();
+                } else {
+                    showAlert('project-alert', 'Error al eliminar proyecto', 'error');
+                }
+            } catch (err) {
+                showAlert('project-alert', 'Error: ' + err.message, 'error');
+            }
+        }
+
+        // Funcion para cargar los mensajes de contacto enviados por los usuarios, muestra los mensajes en la seccion de mensajes con opciones para marcar como leidos, guarda los mensajes en cache para usarlos en otras funciones como mostrar actividad reciente, muestra mensajes de error en la consola si no se pueden cargar los mensajes
+        async function loadMessages() {
+            try {
+                const response = await apiCall('/api/admin/messages');
+                if (response.ok) {
+                    const messages = await response.json();
+                    cachedMessages = messages;
+                    const list = document.getElementById('messages-list');
+
+                    if (messages.length === 0) {
+                        list.innerHTML = '<p class="text-zinc-400">Aun no hay mensajes</p>';
+                        return;
+                    }
+
+                    list.innerHTML = messages.map(m => `
+                <div class="message-item mb-3 ${m.read ? '' : 'message-item-unread'}">
+                    <div class="mb-2 flex items-center justify-between">
+                        <span class="font-bold text-white">${m.name}</span>
+                        <span class="text-xs text-zinc-400">${new Date(m.created_at).toLocaleString()}</span>
+                    </div>
+                    <div class="text-xs text-zinc-400">${m.email}</div>
+                    <div class="mt-2 whitespace-pre-wrap break-words text-sm text-zinc-300">${m.message}</div>
+                    ${!m.read ? `<button class="action-btn mt-3 !inline-flex !w-auto !flex-none" onclick="markMessageRead(${m.id})">Marcar como leido</button>` : ''}
+                </div>
+            `).join('');
+                    renderRecentActivity();
+                }
+            } catch (err) {
+                console.error('Error cargando mensajes:', err);
+            }
+        }
+
+        // Funcion para marcar un mensaje como leido, actualiza la lista de mensajes y las estadisticas despues de marcar el mensaje
+        async function markMessageRead(messageId) {
+            try {
+                const response = await apiCall(`/api/admin/messages/${messageId}`, 'PUT');
+                if (response.ok) {
+                    loadMessages();
+                    updateStats();
+                }
+            } catch (err) {
+                console.error('Error marcando mensaje:', err);
+            }
+        }
+
+        // Estadisticas
+        async function updateStats() {
+            try {
+                const response = await apiCall('/api/admin/messages');
+                if (response.ok) {
+                    const messages = await response.json();
+                    document.getElementById('total-messages').textContent = messages.length;
+                    document.getElementById('unread-messages').textContent = messages.filter(m => !m.read).length;
+                }
+            } catch (err) {
+                console.error('Error cargando estadisticas:', err);
+            }
+
+            try {
+                const response = await fetch('/api/projects');
+                if (response.ok) {
+                    const projects = await response.json();
+                    document.getElementById('total-projects').textContent = projects.length;
+                }
+            } catch (err) {
+                console.error('Error cargando proyectos:', err);
+            }
+        }
+
+        // Despliegue
+        async function deployApp() {
+            const btn = document.getElementById('deploy-btn');
+            const status = document.getElementById('deploy-status');
+
+            if (btn.classList.contains('loading')) return;
+            if (!confirm('⚠️ Esto reconstruira y reiniciara todos los contenedores. Continuar?')) return;
+
+            btn.classList.add('loading');
+            status.textContent = 'Iniciando despliegue...';
+
+            try {
+                const response = await apiCall('/api/admin/deploy', 'POST');
+                if (response.ok) {
+                    const result = await response.json();
+                    showAlert('deploy-alert', 'Despliegue exitoso. Respaldo: ' + result.backup, 'success');
+                    status.textContent = '✓ Despliegue completado correctamente';
+                } else {
+                    const error = await response.text();
+                    showAlert('deploy-alert', 'Despliegue fallido: ' + error, 'error');
+                    status.textContent = '✗ Despliegue fallido';
+                }
+            } catch (err) {
+                showAlert('deploy-alert', 'Error: ' + err.message, 'error');
+                status.textContent = '✗ Error en despliegue';
+            } finally {
+                btn.classList.remove('loading');
+            }
+        }
+    </script>
+
+</body>
+
+</html>

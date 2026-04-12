@@ -4,7 +4,7 @@
     "description": "Este es un template base para un portafolio personal utilizando una arquitectura de microservicios con Docker.",
     "main": "index.js",
     "scripts": {
-        "build:css": "tailwindcss -i ./src/input.css -o ./html/styles.css --minify",
+        "build:css": "tailwindcss -i ./src/input.css -o ./html/styles.css",
         "watch:css": "tailwindcss -i ./src/input.css -o ./html/styles.css --watch",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -12,8 +12,19 @@
         "type": "git",
         "url": "git+https://github.com/mackack0/portfolio-template.git"
     },
-    "keywords": [],
-    "author": "",
+    "keywords": [
+        "portfolio",
+        "template",
+        "docker",
+        "microservices",
+        "web development",
+        "personal website",
+        "responsive design",
+        "tailwindcss",
+        "autoprefixer",
+        "postcss"
+    ],
+    "author": "Agustin Moreira",
     "license": "ISC",
     "bugs": {
         "url": "https://github.com/mackack0/portfolio-template/issues"

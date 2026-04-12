@@ -1,0 +1,10 @@
+node_modules
+dist
+build
+.git
+.gitignore
+.env.local
+.vscode
+*.log
+letsencrypt
+data/letsencrypt-acme-challenge
